@@ -1,0 +1,20 @@
+name: Run Reek
+
+on: [pull_request]
+
+jobs:
+  reek:
+    name: Reek
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+      - run: gem install --no-doc 'reek:>=6.0.2'
+      - run: files=$(git ls-files | grep -E "\.rb|\.thor|\.rake|config.ru|Gemfile|Rakefile|Guardfile" | grep -vE "Gemfile.lock"; exit 0) && reek --config .reek.yml --format json $files >> reek.json && cat reek.json
+        id: reek
+      - uses: duderman/rubocop-annotate-action@v0.1.0
+        with:
+          path: reek.json
+        if: ${{ failure() }}

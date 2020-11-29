@@ -1,0 +1,20 @@
+name: Run Haml Lint
+
+on: [pull_request]
+
+jobs:
+  haml:
+    name: Haml Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+      - run: gem install --no-doc 'haml_lint:>=0.36.0'
+      - run: files=$(git ls-files | grep -E "\.haml" | grep -vE "\.yml"; exit 0) && haml-lint $files --exclude-linter RuboCop --reporter progress --reporter json >> haml.json && cat haml.json
+        id: haml
+      - uses: duderman/rubocop-annotate-action@v0.1.0
+        with:
+          path: haml.json
+        if: ${{ failure() }}

@@ -1,0 +1,110 @@
+name: Run Rubocop
+
+on: [pull_request]
+
+jobs:
+  rubocop:
+    name: Rubocop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+      - run: gem install --no-doc 'rubocop:>=1.4.2'
+      - run: files=$(git ls-files | grep -E "\.rb|\.thor|\.rake|config.ru|Gemfile|Rakefile|Guardfile" | grep -vE "Gemfile.lock"; exit 0) && rubocop --config .rubocop.yml --format progress --format json --out rubocop.json $files && cat rubocop.json
+        id: rubocop
+      - uses: duderman/rubocop-annotate-action@v0.1.0
+        with:
+          path: rubocop.json
+        if: ${{ failure() }}
+  rubocop-md:
+    name: Rubocop MD
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+      - run: gem install --no-doc 'rubocop:>=1.4.2' 'rubocop-md:>=0.4.1'
+      - run: files=$(git ls-files | grep -E "\.rb|\.thor|\.rake|config.ru|Gemfile|Rakefile|Guardfile" | grep -vE "Gemfile.lock"; exit 0) && rubocop --config .rubocop-md.yml --format progress --format json --out rubocop-md.json --require rubocop-md $files && cat rubocop-md.json
+        id: rubocop-md
+      - uses: duderman/rubocop-annotate-action@v0.1.0
+        with:
+          path: rubocop-md.json
+        if: ${{ failure() }}
+  rubocop-performance:
+    name: Rubocop Performance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+      - run: gem install --no-doc 'rubocop:>=1.4.2' 'rubocop-performance:>=1.9.1'
+      - run: files=$(git ls-files | grep -E "\.rb|\.thor|\.rake|config.ru|Gemfile|Rakefile|Guardfile" | grep -vE "Gemfile.lock"; exit 0) && rubocop --config .rubocop.yml --format progress --format json --out rubocop-performance.json --require rubocop-performance $files && cat rubocop-performance.json
+        id: rubocop-performance
+      - uses: duderman/rubocop-annotate-action@v0.1.0
+        with:
+          path: rubocop-performance.json
+        if: ${{ failure() }}
+  rubocop-rails:
+    name: Rubocop Rails
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+      - run: gem install --no-doc 'rubocop:>=1.4.2' 'rubocop-rails:>=2.8.1'
+      - run: files=$(git ls-files | grep -E "\.rb|\.thor|\.rake|config.ru|Gemfile|Rakefile|Guardfile" | grep -vE "Gemfile.lock"; exit 0) && rubocop --config .rubocop-rails.yml --format progress --format json --out rubocop-rails.json --require rubocop-rails $files && cat rubocop-rails.json
+        id: rubocop-rails
+      - uses: duderman/rubocop-annotate-action@v0.1.0
+        with:
+          path: rubocop-rails.json
+        if: ${{ failure() }}
+  rubocop-rake:
+    name: Rubocop Rake
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+      - run: gem install --no-doc 'rubocop:>=1.4.2' 'rubocop-rake:>=0.5.1'
+      - run: files=$(git ls-files | grep -E "\.rb|\.thor|\.rake|config.ru|Gemfile|Rakefile|Guardfile" | grep -vE "Gemfile.lock"; exit 0) && rubocop --config .rubocop.yml --format progress --format json --out rubocop-rake.json --require rubocop-rake $files && cat rubocop-rake.json
+        id: rubocop-rake
+      - uses: duderman/rubocop-annotate-action@v0.1.0
+        with:
+          path: rubocop-rake.json
+        if: ${{ failure() }}
+  rubocop-rspec:
+    name: Rubocop Rspec
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+      - run: gem install --no-doc 'rubocop:>=1.4.2' 'rubocop-rspec:>=2.0.0'
+      - run: files=$(git ls-files | grep -E "\.rb|\.thor|\.rake|config.ru|Gemfile|Rakefile|Guardfile" | grep -vE "Gemfile.lock"; exit 0) && rubocop --config .rubocop.yml --format progress --format json --out rubocop-rspec.json --require rubocop-rspec $files && cat rubocop-rspec.json
+        id: rubocop-rspec
+      - uses: duderman/rubocop-annotate-action@v0.1.0
+        with:
+          path: rubocop-rspec.json
+        if: ${{ failure() }}
+  rubocop-thread_safety:
+    name: Rubocop Thread Safety
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+      - run: gem install --no-doc 'rubocop:>=1.4.2' 'rubocop-thread_safety:>=0.4.2'
+      - run: files=$(git ls-files | grep -E "\.rb|\.thor|\.rake|config.ru|Gemfile|Rakefile|Guardfile" | grep -vE "Gemfile.lock"; exit 0) && rubocop --config .rubocop.yml --format progress --format json --out rubocop-thread_safety.json --require rubocop-thread_safety $files && cat rubocop-thread_safety.json
+        id: rubocop-thread_safety
+      - uses: duderman/rubocop-annotate-action@v0.1.0
+        with:
+          path: rubocop-thread_safety.json
+        if: ${{ failure() }}
